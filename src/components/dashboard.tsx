@@ -123,11 +123,11 @@ export default function Dashboard(){
   };
  
   return (
-    <div style={{ padding: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+    <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: 16, minHeight: "100dvh", background: "#020617" }}>
  
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: "white" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+        <h1 style={{ fontSize: "clamp(16px, 4vw, 22px)", fontWeight: 700, color: "white" }}>
           Forecast Monitoring App
         </h1>
         <button
@@ -144,6 +144,7 @@ export default function Dashboard(){
             fontWeight: 500,
             cursor: loading ? "not-allowed" : "pointer",
             opacity: loading ? 0.6 : 1,
+            whiteSpace: "nowrap",
           }}
         >
           <svg
@@ -163,18 +164,20 @@ export default function Dashboard(){
  
       {/* Controls */}
       <div style={{
-        display: "flex", flexWrap: "wrap", gap: 24, alignItems: "flex-end",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        gap: 20,
         background: "#0f172a",
         border: "1px solid #1e293b",
         borderRadius: 12,
-        padding: "20px 24px",
+        padding: "16px",
       }}>
         {/* Start */}
         <div>
           <label style={labelStyle}>Start Time</label>
           <div style={{ display: "flex", gap: 8 }}>
             <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} style={inputStyle} />
-            <input type="number" min={0} max={23} value={startTime} onChange={e => setStartTime(Number(e.target.value))} style={{ ...inputStyle, width: 70 }} />
+            <input type="number" min={0} max={23} value={startTime} onChange={e => setStartTime(Number(e.target.value))} style={{ ...inputStyle, width: 70, flexShrink: 0 }} />
           </div>
         </div>
  
@@ -183,19 +186,19 @@ export default function Dashboard(){
           <label style={labelStyle}>End Time</label>
           <div style={{ display: "flex", gap: 8 }}>
             <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} style={inputStyle} />
-            <input type="number" min={0} max={23} value={endTime} onChange={e => setEndTime(Number(e.target.value))} style={{ ...inputStyle, width: 70 }} />
+            <input type="number" min={0} max={23} value={endTime} onChange={e => setEndTime(Number(e.target.value))} style={{ ...inputStyle, width: 70, flexShrink: 0 }} />
           </div>
         </div>
  
         {/* Horizon */}
-        <div style={{ minWidth: 200 }}>
+        <div>
           <label style={labelStyle}>
             Forecast Horizon: <span style={{ color: "#60a5fa" }}>{horizon}h</span>
           </label>
           <input
             type="range" min={0} max={48} value={horizon}
             onChange={e => setHorizon(Number(e.target.value))}
-            style={{ width: "100%", accentColor: "#3b82f6" }}
+            style={{ width: "100%", accentColor: "#3b82f6", marginTop: 6 }}
           />
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: "#475569", marginTop: 4 }}>
             <span>0h</span><span>24h</span><span>48h</span>
@@ -208,8 +211,9 @@ export default function Dashboard(){
         background: "#0f172a",
         border: "1px solid #1e293b",
         borderRadius: 12,
-        padding: "20px 16px 16px",
+        padding: "16px 8px 16px 8px",
         position: "relative",
+        flex: 1,
       }}>
         {loading && (
           <div style={{
@@ -221,28 +225,29 @@ export default function Dashboard(){
             <span style={{ color: "#64748b", fontSize: 14 }}>Loading...</span>
           </div>
         )}
-        <div style={{ width: "100%", height: 450 }}>
+        <div style={{ width: "100%", height: "clamp(260px, 50vw, 450px)", flex: 1 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 4, right: 24, left: 8, bottom: 40 }}>
+            <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 40 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
               <XAxis
                 dataKey="time"
                 tickFormatter={formatAxisTime}
-                tick={{ fontSize: 11, fill: "#475569" }}
+                tick={{ fontSize: 10, fill: "#475569" }}
                 tickLine={false}
                 axisLine={{ stroke: "#1e293b" }}
                 interval="preserveStartEnd"
-                label={{ value: "Target Time (UTC)", position: "insideBottom", offset: -14, fontSize: 12, fill: "#475569" }}
+                label={{ value: "Target Time (UTC)", position: "insideBottom", offset: -14, fontSize: 11, fill: "#475569" }}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#475569" }}
+                tick={{ fontSize: 10, fill: "#475569" }}
                 tickLine={false}
                 axisLine={{ stroke: "#1e293b" }}
                 tickFormatter={v => `${(v / 1000).toFixed(0)}k`}
-                label={{ value: "Power (MW)", angle: -90, position: "insideLeft", offset: 16, fontSize: 12, fill: "#475569" }}
+                width={36}
+                label={{ value: "Power (MW)", angle: -90, position: "insideLeft", offset: 10, fontSize: 11, fill: "#475569" }}
               />
               <Tooltip
-                contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, color: "white" }}
+                contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, color: "white", fontSize: 12 }}
                 labelStyle={{ color: "#94a3b8", marginBottom: 4 }}
                 labelFormatter={(label: any) => formatAxisTime(label)}
                 formatter={(val: any) => [`${val?.toLocaleString()} MW`]}
@@ -255,7 +260,10 @@ export default function Dashboard(){
         </div>
       </div>
  
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        * { box-sizing: border-box; }
+      `}</style>
     </div>
   );
 }
