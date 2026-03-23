@@ -21,7 +21,7 @@ export async function GET(req:Request){
         const endDateTime = new Date(end);
 
         const publishDateFrom = new Date(startDateTime);
-        publishDateFrom.setHours(publishDateFrom.getHours() - horizon);
+        publishDateFrom.setHours(publishDateFrom.getHours() - 48);
 
         const publishDateTo = new Date(endDateTime);
         publishDateTo.setHours(publishDateTo.getHours() - horizon);
